@@ -1,9 +1,7 @@
 #! /bin/bash
 
-#! /bin/bash
-
 #load basic config
-. './config/global.cfg'
+. "$source_dir/config/global.cfg"
 
 if [ $# = 0 ];
 then
@@ -19,14 +17,14 @@ do
 
   case $key in
     --help)
-      . './tasks/help.sh'
+      . "$source_dir/tasks/help.sh"
       exit 1
   		;;
     --source=*)
       if [ -z "${key#*=}" ];
       then
         flagEmptyOption=1
-        . "./tasks/error.sh"
+        . "$source_dir/tasks/error.sh"
       fi
       env_source=${key#*=}
       shift
@@ -35,7 +33,7 @@ do
       if [ -z "${key#*=}" ];
       then
         flagEmptyOption=1
-        . "./tasks/error.sh"
+        . "$source_dir/tasks/error.sh"
       fi
       TASK=${key#*=}
       shift
@@ -44,10 +42,10 @@ do
       if [ -z "${key#*=}" ];
       then
         flagEmptyOption=1
-        . "./tasks/error.sh"
+        . "$source_dir/tasks/error.sh"
       fi
       server=${key#*=}
-      . "./config/server/${key#*=}.cfg"
+      . "$source_dir/config/server/${key#*=}.cfg"
       shift
       ;;
     --force)
@@ -79,13 +77,13 @@ then
   if [ $flagNoBranchAllowed == 1 ] && [ $flagForce == 0 ];
   then
     flagSourceBranchNoForce=1
-    . "./tasks/error.sh"
+    . "$source_dir/tasks/error.sh"
   fi
 
   # Let the --force be confirmed
   if [ $flagForce == 1 ];
   then
-    . "./tasks/confirm.sh"
+    . "$source_dir/tasks/confirm.sh"
   fi
 
   # Execute Deployment helper
@@ -95,7 +93,7 @@ then
   fi
 
   # Deploy
-  DEPLOYMENT_SOURCE=$env_source surf $TASK $DEPLOY_NAME
+  $php_cmd $surf_cmd $TASK $DEPLOY_NAME
 
 else
   echo "You are missing option(s) --source and/or --task"
